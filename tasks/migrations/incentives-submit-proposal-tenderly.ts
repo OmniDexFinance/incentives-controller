@@ -19,11 +19,11 @@ const AAVE_WHALE = '0x25f2226b597e8f9514b3f68f00f494cf4f286491';
 
 task('incentives-submit-proposal:tenderly', 'Submit the incentives proposal to Aave Governance')
   .addParam('proposalExecutionPayload')
-  .addParam('aTokens')
+  .addParam('oTokens')
   .addParam('variableDebtTokens')
   .addFlag('defender')
   .setAction(
-    async ({ defender, proposalExecutionPayload, aTokens, variableDebtTokens }, localBRE) => {
+    async ({ defender, proposalExecutionPayload, oTokens, variableDebtTokens }, localBRE) => {
       await localBRE.run('set-DRE');
       let proposer: Signer;
       [proposer] = await DRE.ethers.getSigners();
@@ -43,8 +43,8 @@ task('incentives-submit-proposal:tenderly', 'Submit the incentives proposal to A
         );
       }
 
-      if (aTokens.split(',').length !== 6) {
-        throw new Error('aTokens input param should have 6 elements');
+      if (oTokens.split(',').length !== 6) {
+        throw new Error('oTokens input param should have 6 elements');
       }
 
       if (variableDebtTokens.split(',').length !== 6) {
@@ -76,7 +76,7 @@ task('incentives-submit-proposal:tenderly', 'Submit the incentives proposal to A
       const proposalId = await gov.getProposalsCount();
       const proposalParams = {
         proposalExecutionPayload,
-        aTokens,
+        oTokens,
         variableDebtTokens,
         aaveGovernance: AAVE_GOVERNANCE_V2,
         shortExecutor: AAVE_SHORT_EXECUTOR,

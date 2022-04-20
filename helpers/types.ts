@@ -10,7 +10,7 @@ export enum eContractid {
   DistributionManager = 'DistributionManager',
   AaveIncentivesController = 'AaveIncentivesController',
   MintableErc20 = 'MintableErc20',
-  ATokenMock = 'ATokenMock',
+  OTokenMock = 'OTokenMock',
   IERC20Detailed = 'IERC20Detailed',
   StakedTokenIncentivesController = 'StakedTokenIncentivesController',
   MockSelfDestruct = 'MockSelfDestruct',

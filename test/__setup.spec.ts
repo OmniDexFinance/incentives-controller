@@ -2,7 +2,7 @@ import rawBRE from 'hardhat';
 import { Signer, ethers } from 'ethers';
 import { getBlockTimestamp, getEthersSigners } from '../helpers/contracts-helpers';
 import { initializeMakeSuite } from './helpers/make-suite';
-import { deployMintableErc20, deployATokenMock } from '../helpers/contracts-accessors';
+import { deployMintableErc20, deployOTokenMock } from '../helpers/contracts-accessors';
 import { DRE, waitForTx } from '../helpers/misc-utils';
 import { MintableErc20 } from '../types/MintableErc20';
 import { testDeployIncentivesController } from './helpers/deploy';
@@ -61,11 +61,11 @@ const buildTestEnv = async (
   );
 
   const distributionDuration = ((await getBlockTimestamp()) + 1000 * 60 * 60).toString();
-  await deployATokenMock(incentivesProxy.address, 'aDai');
-  await deployATokenMock(incentivesProxy.address, 'aWeth');
+  await deployOTokenMock(incentivesProxy.address, 'aDai');
+  await deployOTokenMock(incentivesProxy.address, 'aWeth');
 
-  await deployATokenMock(baseIncentivesProxy, 'aDaiBase');
-  await deployATokenMock(baseIncentivesProxy, 'aWethBase');
+  await deployOTokenMock(baseIncentivesProxy, 'aDaiBase');
+  await deployOTokenMock(baseIncentivesProxy, 'aWethBase');
 
   const incentivesController = StakedTokenIncentivesController__factory.connect(
     incentivesProxy.address,

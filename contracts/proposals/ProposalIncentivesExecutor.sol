@@ -5,13 +5,13 @@ pragma abicoder v2;
 import {IERC20} from '@aave/aave-stake/contracts/interfaces/IERC20.sol';
 import {ILendingPoolAddressesProvider} from '../interfaces/ILendingPoolAddressesProvider.sol';
 import {ILendingPoolConfigurator} from '../interfaces/ILendingPoolConfigurator.sol';
-import {IAaveIncentivesController} from '../interfaces/IAaveIncentivesController.sol';
-import {IAaveEcosystemReserveController} from '../interfaces/IAaveEcosystemReserveController.sol';
+import {IOmnidexIncentivesController} from '../interfaces/IOmnidexIncentivesController.sol';
+import {IOmnidexEcosystemReserveController} from '../interfaces/IOmnidexEcosystemReserveController.sol';
 import {IProposalIncentivesExecutor} from '../interfaces/IProposalIncentivesExecutor.sol';
 import {DistributionTypes} from '../lib/DistributionTypes.sol';
 import {DataTypes} from '../utils/DataTypes.sol';
 import {ILendingPoolData} from '../interfaces/ILendingPoolData.sol';
-import {IATokenDetailed} from '../interfaces/IATokenDetailed.sol';
+import {IOTokenDetailed} from '../interfaces/IOTokenDetailed.sol';
 import {PercentageMath} from '../utils/PercentageMath.sol';
 import {SafeMath} from '../lib/SafeMath.sol';
 
@@ -31,7 +31,7 @@ contract ProposalIncentivesExecutor is IProposalIncentivesExecutor {
   uint256 constant DISTRIBUTION_AMOUNT = 198000000000000000000000; // 198000 AAVE during 90 days
 
   function execute(
-    address[6] memory aTokenImplementations,
+    address[6] memory oTokenImplementations,
     address[6] memory variableDebtImplementations
   ) external override {
     uint256 tokensCounter;
@@ -65,10 +65,10 @@ contract ProposalIncentivesExecutor is IProposalIncentivesExecutor {
     emissions[11] = 129733796296296; //vDebtWETH
 
     ILendingPoolConfigurator poolConfigurator = ILendingPoolConfigurator(POOL_CONFIGURATOR);
-    IAaveIncentivesController incentivesController =
-      IAaveIncentivesController(INCENTIVES_CONTROLLER_PROXY_ADDRESS);
-    IAaveEcosystemReserveController ecosystemReserveController =
-      IAaveEcosystemReserveController(ECO_RESERVE_ADDRESS);
+    IOmnidexIncentivesController incentivesController =
+      IOmnidexIncentivesController(INCENTIVES_CONTROLLER_PROXY_ADDRESS);
+    IOmnidexEcosystemReserveController ecosystemReserveController =
+      IOmnidexEcosystemReserveController(ECO_RESERVE_ADDRESS);
 
     ILendingPoolAddressesProvider provider = ILendingPoolAddressesProvider(ADDRESSES_PROVIDER);
 
@@ -79,31 +79,31 @@ contract ProposalIncentivesExecutor is IProposalIncentivesExecutor {
     provider.setAddressAsProxy(keccak256('INCENTIVES_CONTROLLER'), INCENTIVES_CONTROLLER_IMPL_ADDRESS);
 
     require(
-      aTokenImplementations.length == variableDebtImplementations.length &&
-        aTokenImplementations.length == reserves.length,
+      oTokenImplementations.length == variableDebtImplementations.length &&
+        oTokenImplementations.length == reserves.length,
       'ARRAY_LENGTH_MISMATCH'
     );
 
-    // Update each reserve AToken implementation, Debt implementation, and prepare incentives configuration input
+    // Update each reserve OToken implementation, Debt implementation, and prepare incentives configuration input
     for (uint256 x = 0; x < reserves.length; x++) {
       require(
-        IATokenDetailed(aTokenImplementations[x]).UNDERLYING_ASSET_ADDRESS() == reserves[x],
-        'AToken underlying does not match'
+        IOTokenDetailed(oTokenImplementations[x]).UNDERLYING_ASSET_ADDRESS() == reserves[x],
+        'OToken underlying does not match'
       );
       require(
-        IATokenDetailed(variableDebtImplementations[x]).UNDERLYING_ASSET_ADDRESS() == reserves[x],
+        IOTokenDetailed(variableDebtImplementations[x]).UNDERLYING_ASSET_ADDRESS() == reserves[x],
         'Debt Token underlying does not match'
       );
       DataTypes.ReserveData memory reserveData =
         ILendingPoolData(LENDING_POOL).getReserveData(reserves[x]);
 
-      // Update aToken impl
-      poolConfigurator.updateAToken(reserves[x], aTokenImplementations[x]);
+      // Update oToken impl
+      poolConfigurator.updateOToken(reserves[x], oTokenImplementations[x]);
 
       // Update variable debt impl
       poolConfigurator.updateVariableDebtToken(reserves[x], variableDebtImplementations[x]);
 
-      assets[tokensCounter++] = reserveData.aTokenAddress;
+      assets[tokensCounter++] = reserveData.oTokenAddress;
 
       // Configure variable debt token at incentives controller
       assets[tokensCounter++] = reserveData.variableDebtTokenAddress;
@@ -116,7 +116,7 @@ contract ProposalIncentivesExecutor is IProposalIncentivesExecutor {
       DISTRIBUTION_AMOUNT
     );
 
-    // Enable incentives in aTokens and Variable Debt tokens
+    // Enable incentives in oTokens and Variable Debt tokens
     incentivesController.configureAssets(assets, emissions);
 
     // Sets the end date for the distribution

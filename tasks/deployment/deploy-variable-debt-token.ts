@@ -8,7 +8,7 @@ import {
   VariableDebtToken__factory,
 } from '../../types';
 
-task('deploy-var-debt-token', 'Deploy AToken using prior reserve config')
+task('deploy-var-debt-token', 'Deploy OToken using prior reserve config')
   .addParam('pool')
   .addParam('asset')
   .addParam('incentivesController')

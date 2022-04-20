@@ -22,14 +22,14 @@ const INCENTIVES_PROXY = '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5';
 
 task('verify-proposal-etherscan', 'Verify proposals')
   .addParam('assets')
-  .addParam('aTokens')
+  .addParam('oTokens')
   .addParam('variableDebtTokens')
   .addParam('proposalPayloadAddress')
-  .setAction(async ({ assets, aTokens, variableDebtTokens, proposalPayloadAddress }, localBRE) => {
+  .setAction(async ({ assets, oTokens, variableDebtTokens, proposalPayloadAddress }, localBRE) => {
     await localBRE.run('set-DRE');
     const [deployer] = await localBRE.ethers.getSigners();
     const tokensToUpdate = assets.split(',');
-    aTokens = aTokens.split(',');
+    oTokens = oTokens.split(',');
     variableDebtTokens = variableDebtTokens.split(',');
 
     // Instances
@@ -63,23 +63,23 @@ task('verify-proposal-etherscan', 'Verify proposals')
     console.log('==== Etherscan verification ====');
     console.log('- Verify proposal payload');
     await verifyContract(proposalPayloadAddress, []);
-    console.log('- Verify aTokens');
+    console.log('- Verify oTokens');
 
     // Params
     for (let x = 0; x < reserveConfigs.length; x++) {
       const { tokenAddress } = reserveConfigs[x];
-      console.log(`- Verifying ${reserveConfigs[x].symbol} aToken implementation at ${aTokens[x]}`);
-      const { aTokenAddress, variableDebtTokenAddress } = await pool.getReserveData(tokenAddress);
+      console.log(`- Verifying ${reserveConfigs[x].symbol} oToken implementation at ${oTokens[x]}`);
+      const { oTokenAddress, variableDebtTokenAddress } = await pool.getReserveData(tokenAddress);
 
-      const aTokenName = await IERC20Detailed__factory.connect(aTokenAddress, deployer).name();
-      const aTokenSymbol = await IERC20Detailed__factory.connect(aTokenAddress, deployer).symbol();
+      const oTokenName = await IERC20Detailed__factory.connect(oTokenAddress, deployer).name();
+      const oTokenSymbol = await IERC20Detailed__factory.connect(oTokenAddress, deployer).symbol();
 
-      await verifyContract(aTokens[x], [
+      await verifyContract(oTokens[x], [
         AAVE_LENDING_POOL,
         reserveConfigs[x].tokenAddress,
         TREASURY,
-        aTokenName,
-        aTokenSymbol,
+        oTokenName,
+        oTokenSymbol,
         INCENTIVES_PROXY,
       ]);
       console.log(

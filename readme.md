@@ -19,5 +19,5 @@ The implementation logic is defined as follow:
 - Each asset has a defined `emissionPerSecond`
 - For each asset, an `assetIndex` keeps track of the total accumulated rewards
 - For each user, a `userIndex` keeps track of the user accumulated rewards
-- On `handleAction()`, that is triggered whenever an aToken/debt Token is minted/burned by a user, the `userIndex` and the `assetIndex` are accumulated depending on the time passed since the last action
+- On `handleAction()`, that is triggered whenever an oToken/debt Token is minted/burned by a user, the `userIndex` and the `assetIndex` are accumulated depending on the time passed since the last action
 - At any point in time the user pending rewards can be queried through the `getRewardsBalance()` function

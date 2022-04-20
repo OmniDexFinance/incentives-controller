@@ -2,7 +2,7 @@
 pragma solidity 0.7.5;
 
 interface ILendingPoolConfigurator {
-  function updateAToken(address reserve, address implementation) external;
+  function updateOToken(address reserve, address implementation) external;
 
   function updateVariableDebtToken(address reserve, address implementation) external;
 }

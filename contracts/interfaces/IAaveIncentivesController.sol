@@ -3,9 +3,9 @@ pragma solidity 0.7.5;
 
 pragma experimental ABIEncoderV2;
 
-import {IAaveDistributionManager} from '../interfaces/IAaveDistributionManager.sol';
+import {IOmnidexDistributionManager} from '../interfaces/IOmnidexDistributionManager.sol';
 
-interface IAaveIncentivesController is IAaveDistributionManager {
+interface IOmnidexIncentivesController is IOmnidexDistributionManager {
   event RewardsAccrued(address indexed user, uint256 amount);
 
   event RewardsClaimed(

@@ -10,7 +10,7 @@ import { MintableErc20 } from '../types/MintableErc20';
 import { SelfdestructTransfer } from '../types/SelfdestructTransfer';
 import { IERC20Detailed } from '../types/IERC20Detailed';
 import { verifyContract } from './etherscan-verification';
-import { ATokenMock } from '../types/ATokenMock';
+import { OTokenMock } from '../types/OTokenMock';
 import {
   PullRewardsIncentivesController__factory,
   InitializableAdminUpgradeabilityProxy__factory,
@@ -67,9 +67,9 @@ export const deployInitializableAdminUpgradeabilityProxy = async (verify?: boole
 export const deployMintableErc20 = async ([name, symbol]: [string, string]) =>
   await deployContract<MintableErc20>(eContractid.MintableErc20, [name, symbol]);
 
-export const deployATokenMock = async (aicAddress: tEthereumAddress, slug: string) => {
-  const instance = await deployContract<ATokenMock>(eContractid.ATokenMock, [aicAddress]);
-  await registerContractInJsonDb(`${eContractid.ATokenMock}-${slug}`, instance);
+export const deployOTokenMock = async (aicAddress: tEthereumAddress, slug: string) => {
+  const instance = await deployContract<OTokenMock>(eContractid.OTokenMock, [aicAddress]);
+  await registerContractInJsonDb(`${eContractid.OTokenMock}-${slug}`, instance);
 };
 
 export const getMintableErc20 = getContractFactory<MintableErc20>(eContractid.MintableErc20);
@@ -86,7 +86,7 @@ export const getPullRewardsIncentivesController = async (address: tEthereumAddre
 
 export const getIErc20Detailed = getContractFactory<IERC20Detailed>(eContractid.IERC20Detailed);
 
-export const getATokenMock = getContractFactory<ATokenMock>(eContractid.ATokenMock);
+export const getOTokenMock = getContractFactory<OTokenMock>(eContractid.OTokenMock);
 
 export const getERC20Contract = (address: tEthereumAddress) =>
   getContract<MintableErc20>(eContractid.MintableErc20, address);

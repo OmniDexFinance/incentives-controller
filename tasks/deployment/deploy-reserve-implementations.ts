@@ -6,7 +6,7 @@ import {
 
 task(
   'deploy-reserve-implementations',
-  'Deploy AToken and Variable debt tokens using prior reserve config'
+  'Deploy OToken and Variable debt tokens using prior reserve config'
 )
   .addParam('provider')
   .addParam('assets')
@@ -18,7 +18,7 @@ task(
     const [deployer] = await localBRE.ethers.getSigners();
     const tokensToUpdate = assets.split(',');
     // Return variables
-    const aTokens: string[] = [];
+    const oTokens: string[] = [];
     const variableDebtTokens: string[] = [];
 
     // Instances
@@ -44,14 +44,14 @@ task(
     }
 
     for (let x = 0; x < reserveConfigs.length; x++) {
-      aTokens[x] = await localBRE.run('deploy-atoken', {
+      oTokens[x] = await localBRE.run('deploy-otoken', {
         pool,
         asset: reserveConfigs[x].tokenAddress,
         treasury,
         incentivesController,
         defender,
       });
-      console.log(`- Deployed ${reserveConfigs[x].symbol} AToken impl at: ${aTokens[x]}`);
+      console.log(`- Deployed ${reserveConfigs[x].symbol} OToken impl at: ${oTokens[x]}`);
       variableDebtTokens[x] = await localBRE.run('deploy-var-debt-token', {
         pool,
         asset: reserveConfigs[x].tokenAddress,
@@ -64,7 +64,7 @@ task(
     }
 
     return {
-      aTokens,
+      oTokens,
       variableDebtTokens,
     };
   });

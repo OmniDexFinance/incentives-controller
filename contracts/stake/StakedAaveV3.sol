@@ -1,1 +1,1 @@
-import '@aave/aave-stake/contracts/stake/StakedAaveV3.sol';
+import '@aave/aave-stake/contracts/stake/StakedOmnidexV3.sol';
